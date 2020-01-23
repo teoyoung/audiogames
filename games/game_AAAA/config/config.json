@@ -1,0 +1,25 @@
+{
+    "baobab": {
+        "stage": {
+            "current": "intro"
+        }
+    },
+    "stepStages": {
+        "Start": "Intro",
+        "Intro": "Game"
+    },
+    "stages": {
+        "intro": {
+            "audioText": "Привет! Это тест аудиоигры",
+            "hello": "world"
+        },
+        "game": {
+
+        }
+    },
+    "audio": {
+        "name": "./audio.mp3",
+        "step": "./stepMin.mp3",
+        "attention": "./attention.mp3" 
+    }
+}

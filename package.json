@@ -1,0 +1,31 @@
+{
+  "name": "audiogames",
+  "version": "1.0.0",
+  "description": "",
+  "main": "webpack.config.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "webpack-dev-server",
+    "bul": "webpack-cli"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/teoyoung/audiogames.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/teoyoung/audiogames/issues"
+  },
+  "homepage": "https://github.com/teoyoung/audiogames#readme",
+  "devDependencies": {
+    "baobab": "^2.5.2",
+    "tone": "^13.8.25",
+    "ts-loader": "^6.2.1",
+    "typescript": "^3.7.2",
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.10",
+    "webpack-dev-server": "^3.9.0"
+  },
+  "dependencies": {}
+}
