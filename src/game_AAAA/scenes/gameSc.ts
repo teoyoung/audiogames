@@ -7,6 +7,8 @@ import MoveSystem from "../systems/move_system";
 import LosingSystem from "../systems/losing_system";
 import PlayerComp from "../components/player";
 import MovePlayerSystem from "../systems/move_player_system";
+import Player from "../player";
+import ShotSystem from "../systems/shot_system";
 
 
 
@@ -16,16 +18,18 @@ export default class GameSc extends Scene {
     private entitys: Entity[] = [];
     private systems: ISystem[] = [];
 
+    private player: Player;
+
     public init(){
         super.init();
 
+        this.player = new Player();
+
         this.createEntity();
         this.addSystems();
+
         this.run();
-        this.run();
-        this.run();
-        this.run();
-        this.run();
+
     }
 
     private createEntity(){
@@ -46,8 +50,8 @@ export default class GameSc extends Scene {
         this.systems = [
             new MoveSystem(),
             new LosingSystem(),
-            new MovePlayerSystem()
 
+            new ShotSystem(this.player)
         ];
     }
 
