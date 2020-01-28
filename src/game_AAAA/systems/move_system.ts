@@ -5,7 +5,8 @@ export default class MoveSystem implements ISystem {
 
     public read( enity: Entity) {
 
-        console.log(enity);
+        let step = enity.getComponent('Position').step;       
+        enity.setComponentValue('Position', 'step', step - 1);
 
     }
 
