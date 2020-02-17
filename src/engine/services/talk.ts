@@ -2,8 +2,14 @@ export default class Talk {
 
     private vote = new SpeechSynthesisUtterance();
     
-    public speak(test: string){
+    public speak(test: string, speed?: number){
+
+        window.speechSynthesis.cancel()
         this.vote.text = test;
+        if(speed){
+            this.vote.rate = speed;
+        }
+
         window.speechSynthesis.speak(this.vote);
     }
 

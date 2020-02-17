@@ -7,32 +7,55 @@ import { Signal } from "../engine/signal";
 export default class Player {
 
     public onShot: Signal;
+    private shot: boolean = false;
 
     private line: number;
+    private speak: string;
 
     constructor(){
+
+        const maxLine = 2;
 
         this.line = 1;
 
         this.onShot = new Signal();
 
         Services.uiEventManager.addEventToButtonId('left', ()=>{ 
-            if(this.line <= 0){ return }
+
+            this.speak = '';
+
+            if(this.line <= 0){ 
+                this.wellDetector();
+                return 
+            }
+
             this.line -= 1;
-            console.log(this.line);
+            this.speak += 'Шаг влево';
+            if(this.line === 0){ 
+                this.speak += 'Стена';
+            }
+            this.dictor();
         })
 
         Services.uiEventManager.addEventToButtonId('right', ()=>{ 
-            if(this.line >= 2){ return }
+
+            this.speak = '';
+
+            if(this.line >= 2){ 
+                this.wellDetector();
+                return 
+            }
             this.line += 1;
-            console.log(this.line);
+            this.speak += 'Шаг вправо';
+            if(this.line === 2){ 
+                this.speak += 'Стена';
+            }
+            this.dictor();
         })
 
         Services.uiEventManager.addEventToButtonId('kill', ()=>{ 
             this.onShot.call();
-        })
-
-        
+        });        
 
     }
 
@@ -40,6 +63,23 @@ export default class Player {
         return this.line;
     }
 
+    public onShoting(){
+        this.shot = true;
+    }
 
+    public offShoting(){
+        this.shot = false;
+    }
+
+    private dictor(){
+        Services.talk.speak(this.speak,3);
+    }
+
+    private wellDetector(){
+        if(this.line === 2 || this.line === 0){
+            Services.talk.speak('Стена', 3);
+            console.log('Стена');
+        }
+    }
 
 }

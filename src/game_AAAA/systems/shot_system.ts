@@ -10,15 +10,18 @@ export default class ShotSystem implements ISystem {
 
         this.player = player;
         this.player.onShot.add(()=>{
-            console.log('It"s work!');
+            console.log("I's work!");
+            this.player.onShoting();
         })
 
     }
 
     public read( enity: Entity) {
 
-        let step = enity.getComponent('Position').step;       
-        enity.setComponentValue('Position', 'step', step - 1);
+        const hp = enity.getComponent('Life').hp;      
+        if(hp === 0){ return } 
+        enity.setComponentValue('Life', 'hp', 0);
+        this.player.offShoting();
 
     }
 
