@@ -1,69 +1,90 @@
 import Scene from "../../engine/scene";
-import Entity, {IEntity} from "../../engine/ecs/ecs_entity";
-import ISystem from '../../engine/ecs/i_system';
-import PositionComp from "../components/position";
-import LosingComp from "../components/losing";
-import LifeComp from "../components/life";
-
-import MoveSystem from "../systems/move_system";
-import LosingSystem from "../systems/losing_system";
-import PlayerComp from "../components/player";
-import MovePlayerSystem from "../systems/move_player_system";
 import Player from "../player";
-import ShotSystem from "../systems/shot_system";
-import VisualSystem from "../systems/visual_system";
+import Services from "../../engine/services";
 
+class Enemy {
 
+    private readonly line: number;
+    private step: number;
 
+    constructor(line:number, step: number){
+        this.line = line;
+        this.step = step;
+    }
+
+    public getPosition(): {line: number, step: number} {
+        return {line: this.line, step: this.step};
+    }
+
+    public move() {
+        if(this.step === 0){ return; }
+        this.step -= 1;
+    }
+
+    public kill(){
+        this.step = Services.utils.getRandomInt(6, 15);
+    }
+
+}
 
 export default class GameSc extends Scene {
 
-    private entitys: Entity[] = [];
-    private systems: ISystem[] = [];
-
     private player: Player;
+    private enemyList: Enemy[] = [];
+    private render: number | any;
 
     public init(){
         super.init();
 
         this.player = new Player();
+        this.player.onShot.add( () => {
+            this.shot();
+        });
 
-        this.createEntity();
-        this.addSystems();
-
-        this.run();
-
+        this.createEnemy();
+        this.render = setInterval(()=>{
+            this.stepRender();
+        }, 3000);
     }
 
-    private createEntity(){
-
+    private createEnemy(){
         for (let line = 0; line < 3; line++) {
-            const entity = new Entity();
-
-            entity.addComponent(new PositionComp(3, line));
-            entity.addComponent(new LosingComp());
-            entity.addComponent(new PlayerComp());
-            entity.addComponent(new LifeComp());
-            
-            this.entitys.push(entity);
-        }
-
-    }
-
-    private addSystems(){
-        this.systems = [
-            new MoveSystem(),
-            new LosingSystem(),
-            new ShotSystem(this.player),
-            new VisualSystem(this.player)
-        ];
-    }
-
-    private run(){
-        for ( const system of this.systems ) {
-            for ( const entity of this.entitys ) {
-                system.read(entity);
-            }                        
+            const enemy = new Enemy(line, Services.utils.getRandomInt(6, 15) );
+            this.enemyList.push(enemy);
         }
     }
+
+    private shot(){
+        for ( let enemy of this.enemyList) {
+            const playerLine = this.player.getPositionLine();
+            const shotRadius = this.player.getShotRadius();
+            const {line, step} = enemy.getPosition();
+            if(playerLine !== line){ continue; }
+            if(step >= shotRadius){ 
+                Services.talk.speak(`Мимо`, 5);
+                continue; 
+            }
+            enemy.kill();
+            Services.talk.speak(`Попал`, 5);
+        }
+    }
+
+    private stepRender(){
+        for ( let enemy of this.enemyList) {
+            enemy.move();      
+            const playerLine = this.player.getPositionLine();      
+            const {line, step} = enemy.getPosition();
+            if(playerLine === line){
+                Services.talk.speak(`${step}`, 3);
+            }
+            if(step > 0) { continue; }
+            this.endGame();
+        }
+    }
+
+    private endGame(){
+        Services.talk.speak(`Конец игры`, 3);
+        clearInterval(this.render);
+    }
+
 }

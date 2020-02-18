@@ -6,15 +6,19 @@ import { Signal } from "../engine/signal";
 
 export default class Player {
 
-    public onShot: Signal;
+    public readonly onShot: Signal;
     private shot: boolean = false;
 
     private line: number;
     private speak: string;
 
+    private readonly shotRadius: number;
+
     constructor(){
 
         const maxLine = 2;
+
+        this.shotRadius = 3;
 
         this.line = 1;
 
@@ -63,12 +67,8 @@ export default class Player {
         return this.line;
     }
 
-    public onShoting(){
-        this.shot = true;
-    }
-
-    public offShoting(){
-        this.shot = false;
+    public getShotRadius():number {
+        return this.shotRadius;
     }
 
     private dictor(){
